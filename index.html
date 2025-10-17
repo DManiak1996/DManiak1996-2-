@@ -6,40 +6,230 @@
   <title>Hola — CV</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap" rel="stylesheet">
   <style>
-    :root{--bg1:#071024;--accent:#7c3aed;--mint:#0ea5a9;color: #e6eef8}
+    :root{--bg1:#071024;--accent:#7c3aed;--mint:#0ea5a9;color:#e6eef8}
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(135deg,var(--bg1),#021028);color:var(--color)}
-    body{display:flex;align-items:center;justify-content:center;padding:32px}
-    .card{width:100%;max-width:920px;padding:44px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 12px 40px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px)}
+    body{display:flex;align-items:center;justify-content:center;padding:32px;transition:filter .2s}
+    .card{width:100%;max-width:920px;padding:44px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 12px 40px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px);opacity:0;transform:translateY(18px) scale(.995);transition:opacity .45s ease, transform .45s cubic-bezier(.2,.9,.3,1)}
+    .card.visible{opacity:1;transform:none}
     .header{display:flex;align-items:center;gap:20px}
-    .logo{width:88px;height:88px;border-radius:14px;background:linear-gradient(135deg,var(--mint),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:800;color:#012;box-shadow:0 8px 24px rgba(0,0,0,0.45)}
+    .logo{width:88px;height:88px;border-radius:14px;background:linear-gradient(135deg,var(--mint),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:800;color:#012;box-shadow:0 8px 24px rgba(0,0,0,0.45);transform:scale(.88);transition:transform .5s cubic-bezier(.2,.9,.3,1)}
+    .logo.pop{transform:scale(1)}
     h1{margin:0;font-size:2rem;line-height:1.05}
     .lead{margin:10px 0 18px;color:rgba(230,238,248,0.86)}
     .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(124,58,237,0.12);color:var(--accent);font-weight:700;font-size:12px;margin-left:8px}
     .actions{display:flex;gap:12px;margin-top:8px}
-    .btn{padding:10px 14px;border-radius:10px;background:var(--mint);color:#012;border:none;text-decoration:none;font-weight:700;cursor:pointer}
+    .btn{padding:10px 14px;border-radius:10px;background:var(--mint);color:#012;border:none;text-decoration:none;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .18s, box-shadow .18s}
+    .btn:active{transform:translateY(1px)}
     .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
     .status{margin-top:14px;color:rgba(230,238,248,0.75);font-size:14px}
-    .typing{display:inline-block;overflow:hidden;white-space:nowrap;border-right:2px solid rgba(230,238,248,0.6);animation:typing 3.6s steps(26,end) infinite, blink 1.2s step-end infinite}
-    @keyframes typing{0%{width:0}40%{width:18ch}70%{width:18ch}100%{width:0}}
-    @keyframes blink{50%{border-right-color:transparent}}
-    @media (max-width:640px){.header{flex-direction:row}.logo{width:68px;height:68px}.card{padding:28px}}
+    .typing{display:inline-block;overflow:hidden;white-space:nowrap;border-right:2px solid rgba(230,238,248,0.6)}
+    .dot{display:inline-block;width:6px;height:6px;margin-left:6px;border-radius:50%;background:rgba(230,238,248,0.6);opacity:0;transform:translateY(-2px)}
+    .dot.show{animation:blink-dot 1s infinite}
+    @keyframes blink-dot{0%{opacity:.25}50%{opacity:1}100%{opacity:.25}}
+    /* Modal */
+    .overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.75));display:none;align-items:center;justify-content:center;z-index:60;padding:24px}
+    .overlay.open{display:flex}
+    .modal{width:100%;max-width:840px;background:linear-gradient(180deg,#021226,rgba(255,255,255,0.02));border-radius:12px;padding:22px;color:var(--color);box-shadow:0 18px 60px rgba(1,6,16,0.8);border:1px solid rgba(255,255,255,0.04);transform:translateY(12px) scale(.98);opacity:0;transition:opacity .28s ease, transform .28s cubic-bezier(.2,.9,.3,1)}
+    .modal.open{transform:none;opacity:1}
+    .modal header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .close{background:transparent;border:none;color:inherit;font-weight:800;padding:8px;border-radius:8px;cursor:pointer}
+    .cv-section{margin-top:12px;padding-top:6px;border-top:1px dashed rgba(255,255,255,0.04)}
+    .cv-grid{display:grid;grid-template-columns:1fr 220px;gap:18px}
+    .skill{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:13px;margin:6px 6px 0 0}
+    .fade-in{opacity:0;transform:translateY(8px);transition:opacity .4s ease, transform .4s cubic-bezier(.2,.9,.3,1)}
+    .fade-in.show{opacity:1;transform:none}
+    @media (max-width:640px){.header{flex-direction:row}.logo{width:68px;height:68px}.card{padding:28px}.cv-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <main class="card" role="main" aria-label="Presentación">
     <div class="header">
-      <div class="logo" aria-hidden="true">DM</div>
+      <div class="logo" id="logo" aria-hidden="true">DM</div>
       <div>
-        <h1>Hola mundo <span class="tag">Pro</span></h1>
-        <p class="lead">Desarrollo interfaces limpias y rápidas — aquí empieza tu CV digital.</p>
+        <h1 id="title">Hola mundo <span class="tag">Pro</span></h1>
+        <p class="lead" id="lead">Desarrollo interfaces limpias y rápidas — aquí empieza tu CV digital.</p>
         <div class="actions">
-          <a class="btn" href="#">Ver CV</a>
-          <a class="btn ghost" href="#">Contacto</a>
+          <button id="btnCv" class="btn" aria-haspopup="dialog" aria-controls="cvModal">Ver CV</button>
+          <button id="btnContact" class="btn ghost" aria-haspopup="dialog" aria-controls="contactModal">Contacto</button>
         </div>
-        <div class="status">Estado: <span class="typing">Creando experiencias web...</span></div>
+        <div class="status">Estado: <span class="typing" id="typingText">Creando experiencias web...</span><span class="dot" id="dot"></span></div>
       </div>
     </div>
   </main>
+
+  <!-- MODAL: CV -->
+  <div class="overlay" id="cvOverlay" aria-hidden="true">
+    <aside class="modal" role="dialog" aria-modal="true" aria-labelledby="cvTitle" id="cvModal">
+      <header>
+        <h2 id="cvTitle">Currículum — Ejemplo</h2>
+        <div>
+          <button class="close" data-close>&times;</button>
+        </div>
+      </header>
+
+      <section class="cv-section cv-grid" id="cvContent">
+        <div>
+          <h3>Diego M — Frontend Developer</h3>
+          <p class="fade-in">Apasionado por construir interfaces accesibles, rápidas y escalables. Experiencia con JS moderno, frameworks y diseño de componentes.</p>
+
+          <div style="margin-top:12px;">
+            <strong>Experiencia</strong>
+            <div class="fade-in" style="margin-top:8px">
+              <p style="margin:.2rem 0"><strong>Senior Frontend — Acme Co.</strong> <small>2021–Presente</small></p>
+              <p style="margin:.2rem 0;color:rgba(230,238,248,0.7)">Lideré la reescritura de la UI, mejorando el rendimiento y la accesibilidad.</p>
+            </div>
+            <div class="fade-in" style="margin-top:8px">
+              <p style="margin:.2rem 0"><strong>Frontend — StartApp</strong> <small>2018–2021</small></p>
+            </div>
+          </div>
+        </div>
+
+        <aside>
+          <strong>Habilidades</strong>
+          <div style="margin-top:8px">
+            <span class="skill fade-in">JavaScript</span>
+            <span class="skill fade-in">HTML</span>
+            <span class="skill fade-in">CSS</span>
+            <span class="skill fade-in">React</span>
+            <span class="skill fade-in">Vite</span>
+          </div>
+
+          <div style="margin-top:14px">
+            <strong>Educación</strong>
+            <p class="fade-in" style="margin:.4rem 0">Grado en Informática — Univ. Ejemplo</p>
+          </div>
+        </aside>
+      </section>
+    </aside>
+  </div>
+
+  <!-- MODAL: Contacto -->
+  <div class="overlay" id="contactOverlay" aria-hidden="true">
+    <aside class="modal" role="dialog" aria-modal="true" aria-labelledby="contactTitle" id="contactModal">
+      <header>
+        <h2 id="contactTitle">Contacto</h2>
+        <div>
+          <button class="close" data-close>&times;</button>
+        </div>
+      </header>
+
+      <section class="cv-section">
+        <p class="fade-in">Teléfono: <a href="tel:+34123456789">+34 123 456 789</a></p>
+        <p class="fade-in">Correo: <a href="mailto:diego@example.com">diego@example.com</a></p>
+        <p class="fade-in" style="margin-top:12px;color:rgba(230,238,248,0.75)">También disponible en LinkedIn y GitHub.</p>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    // Animaciones iniciales y lógica de modales
+    (function(){
+      const card = document.querySelector('.card');
+      const logo = document.getElementById('logo');
+      const typing = document.getElementById('typingText');
+      const dot = document.getElementById('dot');
+      const fadeEls = (root) => Array.from((root||document).querySelectorAll('.fade-in'));
+
+      // Reveal sequence
+      window.requestAnimationFrame(()=> {
+        card.classList.add('visible');
+        setTimeout(()=> logo.classList.add('pop'), 180);
+        setTimeout(()=> dot.classList.add('show'), 600);
+      });
+
+      // Simple typing-like animation controlled in JS (cycles messages)
+      const messages = ['Creando experiencias web...', 'Optimizando performance...', 'Diseñando con detalle...'];
+      let msgIndex = 0;
+      let charIndex = 0;
+      let forward = true;
+      function tick(){
+        const msg = messages[msgIndex];
+        if(forward){
+          charIndex++;
+          if(charIndex >= msg.length){ forward = false; setTimeout(tick, 900); return; }
+        } else {
+          charIndex--;
+          if(charIndex <= 0){ forward = true; msgIndex = (msgIndex+1)%messages.length; setTimeout(tick, 300); return; }
+        }
+        typing.textContent = msg.slice(0, charIndex);
+        setTimeout(tick, forward ? 40 + Math.random()*40 : 18 + Math.random()*30);
+      }
+      tick();
+
+      // Modal helpers
+      const lockBody = (lock)=> document.body.style.overflow = lock ? 'hidden' : '';
+
+      function openModal(overlayEl){
+        overlayEl.classList.add('open');
+        const modal = overlayEl.querySelector('.modal');
+        setTimeout(()=> modal.classList.add('open'), 20);
+        overlayEl.setAttribute('aria-hidden','false');
+        lockBody(true);
+        // stagger reveal of content inside
+        const items = fadeEls(modal);
+        items.forEach((el,i)=> setTimeout(()=> el.classList.add('show'), 80 + i*90));
+        // focus
+        const closeBtn = modal.querySelector('[data-close]');
+        if(closeBtn) closeBtn.focus();
+      }
+
+      function closeModal(overlayEl){
+        const modal = overlayEl.querySelector('.modal');
+        modal.classList.remove('open');
+        overlayEl.setAttribute('aria-hidden','true');
+        // remove fade shows
+        fadeEls(modal).forEach(el=> el.classList.remove('show'));
+        setTimeout(()=> {
+          overlayEl.classList.remove('open');
+          lockBody(false);
+        }, 260);
+      }
+
+      // Bind buttons
+      const btnCv = document.getElementById('btnCv');
+      const btnContact = document.getElementById('btnContact');
+      const cvOverlay = document.getElementById('cvOverlay');
+      const contactOverlay = document.getElementById('contactOverlay');
+
+      btnCv.addEventListener('click', ()=> openModal(cvOverlay));
+      btnContact.addEventListener('click', ()=> openModal(contactOverlay));
+
+      // Close buttons and overlay click
+      document.querySelectorAll('[data-close]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const overlay = e.target.closest('.overlay');
+          if(overlay) closeModal(overlay);
+        });
+      });
+
+      [cvOverlay, contactOverlay].forEach(ov=>{
+        ov.addEventListener('click', (e)=>{
+          if(e.target === ov) closeModal(ov);
+        });
+      });
+
+      // ESC to close
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'Escape'){
+          [cvOverlay, contactOverlay].forEach(ov=> {
+            if(ov.classList.contains('open')) closeModal(ov);
+          });
+        }
+      });
+
+      // Accessibility: trap focus simple
+      document.addEventListener('focusin', (e)=>{
+        const openOv = [cvOverlay, contactOverlay].find(ov=>ov.classList.contains('open'));
+        if(openOv){
+          const modal = openOv.querySelector('.modal');
+          if(modal && !modal.contains(e.target)){
+            e.stopPropagation();
+            modal.querySelector('[data-close]')?.focus();
+          }
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
