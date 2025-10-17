@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hola — CV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg1:#071024;--accent:#7c3aed;--mint:#0ea5a9;color: #e6eef8}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(135deg,var(--bg1),#021028);color:var(--color)}
+    body{display:flex;align-items:center;justify-content:center;padding:32px}
+    .card{width:100%;max-width:920px;padding:44px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 12px 40px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px)}
+    .header{display:flex;align-items:center;gap:20px}
+    .logo{width:88px;height:88px;border-radius:14px;background:linear-gradient(135deg,var(--mint),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:800;color:#012;box-shadow:0 8px 24px rgba(0,0,0,0.45)}
+    h1{margin:0;font-size:2rem;line-height:1.05}
+    .lead{margin:10px 0 18px;color:rgba(230,238,248,0.86)}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(124,58,237,0.12);color:var(--accent);font-weight:700;font-size:12px;margin-left:8px}
+    .actions{display:flex;gap:12px;margin-top:8px}
+    .btn{padding:10px 14px;border-radius:10px;background:var(--mint);color:#012;border:none;text-decoration:none;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
+    .status{margin-top:14px;color:rgba(230,238,248,0.75);font-size:14px}
+    .typing{display:inline-block;overflow:hidden;white-space:nowrap;border-right:2px solid rgba(230,238,248,0.6);animation:typing 3.6s steps(26,end) infinite, blink 1.2s step-end infinite}
+    @keyframes typing{0%{width:0}40%{width:18ch}70%{width:18ch}100%{width:0}}
+    @keyframes blink{50%{border-right-color:transparent}}
+    @media (max-width:640px){.header{flex-direction:row}.logo{width:68px;height:68px}.card{padding:28px}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-label="Presentación">
+    <div class="header">
+      <div class="logo" aria-hidden="true">DM</div>
+      <div>
+        <h1>Hola mundo <span class="tag">Pro</span></h1>
+        <p class="lead">Desarrollo interfaces limpias y rápidas — aquí empieza tu CV digital.</p>
+        <div class="actions">
+          <a class="btn" href="#">Ver CV</a>
+          <a class="btn ghost" href="#">Contacto</a>
+        </div>
+        <div class="status">Estado: <span class="typing">Creando experiencias web...</span></div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
